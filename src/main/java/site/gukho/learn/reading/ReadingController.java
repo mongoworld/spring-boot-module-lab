@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ReadingController {
     }
 
     @PostMapping
-    public ResponseEntity<Reading> saveReading(@RequestBody CreateReadingRequest request) {
+    public ResponseEntity<Reading> saveReading(@Valid  @RequestBody CreateReadingRequest request) {
         long newId = list.stream()
                 .mapToLong(Reading::id)
                 .max()
