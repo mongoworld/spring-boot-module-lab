@@ -1,0 +1,4 @@
+# 테스트 전용 값. .env 가 없는 환경(CI, 처음 받은 저장소)에서도 테스트가 돌게 한다. 실제 비밀키가 아니다
+learn:
+  jwt:
+    secret: h80d2Bo8qY3XcmDitbA9E8AT3uRqOmx0+RtRnFrSPiI=

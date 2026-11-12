@@ -1,3 +1,10 @@
 spring:
   application:
     name: learn
+  config:
+    import: optional:file:.env[.properties]   # 프로젝트 폴더의 .env 를 읽는다. 없어도 시작은 한다
+
+learn:
+  jwt:
+    secret: ${JWT_SECRET}        # Base64 로 인코딩한 32바이트 이상의 비밀키 (.env)
+    expires-in: 30m              # 토큰 유효 시간
