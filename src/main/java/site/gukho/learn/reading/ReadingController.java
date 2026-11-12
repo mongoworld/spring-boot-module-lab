@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/readings")
@@ -26,7 +24,7 @@ public class ReadingController {
         return list.stream()
                 .filter(reading -> reading.id().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"측정값이 없습니다. -" + id));
+                .orElseThrow(() -> new ReadingNotFoundException(id));
     }
 
     @PostMapping
