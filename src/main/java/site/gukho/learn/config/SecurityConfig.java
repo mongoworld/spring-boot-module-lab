@@ -30,6 +30,8 @@ public class SecurityConfig {
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                     // 로그인 API 는 토큰을 받기 전에 불러야 하므로 누구나 허용한다
                     .requestMatchers("/api/auth/**").permitAll()
+                    // 관리자 API 는 토큰의 roles 에 ROLE_ADMIN 이 있어야 한다
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     // 그 밖의 모든 요청은 로그인(유효한 토큰)이 필요하다
                     .anyRequest().authenticated());
         // 위 설정대로 필터들을 순서에 맞게 조립해 하나의 필터 체인으로 만든다
