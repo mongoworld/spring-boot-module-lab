@@ -7,4 +7,9 @@ spring:
     url: jdbc:postgresql://127.0.0.1:5434/learn
     username: learn
     password: ${POSTGRES_PASSWORD}
+  jpa:
+    open-in-view: false   # 요청이 끝난 뒤 화면을 그리는 중에 지연 로딩 쿼리가 나가지 않게 한다
+    hibernate:
+      ddl-auto: validate  # 테이블은 Flyway 가 만들고, Hibernate 는 엔티티와 테이블이 맞는지만 확인한다
+    show-sql: true        # 학습용: JPA 가 만든 SQL 을 로그로 본다
 
