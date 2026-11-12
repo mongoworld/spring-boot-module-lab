@@ -17,6 +17,9 @@ repositories {
 	mavenCentral()
 }
 
+// Mockito 를 테스트 JVM 시작 시 에이전트로 올린다. 실행 중 스스로 붙는 방식은 이후 JDK 에서 막힐 수 있다고 경고한다
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
@@ -33,8 +36,10 @@ dependencies {
 	testImplementation("org.testcontainers:testcontainers-postgresql")
 	testImplementation("org.testcontainers:testcontainers-junit-jupiter")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
