@@ -28,4 +28,9 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	// 기본 출력은 실패한 테스트만 보여주므로, 어떤 테스트가 돌았는지 하나씩 보이게 한다
+	testLogging {
+		events("passed", "skipped", "failed")
+		exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+	}
 }

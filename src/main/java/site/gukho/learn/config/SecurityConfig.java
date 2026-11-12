@@ -3,12 +3,11 @@ package site.gukho.learn.config;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 public class SecurityConfig {
@@ -23,8 +22,8 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             // JWT 가 요청마다 누구인지 증명하므로 서버가 세션(JSESSIONID)에 로그인 상태를 저장하지 않는다
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // 로그인 화면과 Basic 을 끄면 남는 기본 진입점이 403 을 주므로, 로그인 안 한 요청은 401 로 응답한다
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+            // Authorization: Bearer 헤더의 JWT 를 JwtDecoder 로 검사해서 로그인 사용자로 인정한다
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             // 주소별 허용 규칙. 위에서부터 처음 맞는 규칙이 적용되므로 anyRequest 는 맨 아래에 둔다
             .authorizeHttpRequests(auth -> auth
                     // 404 같은 오류 응답을 만들려고 /error 로 가는 내부 이동이 막히면 원래 오류가 401 로 가려진다
