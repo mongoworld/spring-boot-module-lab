@@ -1,3 +1,10 @@
 spring:
   application:
     name: learn
+  config:
+    import: optional:file:.env[.properties]   # 프로젝트 폴더의 .env 를 읽는다. 없어도 시작은 한다
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5434/learn
+    username: learn
+    password: ${POSTGRES_PASSWORD}
+
