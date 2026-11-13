@@ -1,6 +1,7 @@
 package site.gukho.learn.config;
 
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -8,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.util.WebUtils;
+import site.gukho.learn.auth.AuthController;
 
 @Configuration
 public class SecurityConfig {
@@ -15,7 +19,15 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // 토큰을 Authorization 헤더로 보내므로 브라우저가 자동으로 붙이는 쿠키를 노린 CSRF 공격 대상이 아니다
-            .csrf(AbstractHttpConfigurer::disable)
+//            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(csrf -> csrf.spa())
+//            .oauth2ResourceServer(oauth2 -> oauth2
+//                    // 기본은 Authorization 헤더에서 토큰을 찾으므로, access_token 쿠키에서 꺼내게 바꾼다
+//                    .bearerTokenResolver(request -> {
+//                        Cookie cookie = WebUtils.getCookie(request, AuthController.ACCESS_COOKIE);
+//                        return cookie == null ? null : cookie.getValue();
+//                    })
+//                    .jwt(Customizer.withDefaults()))
             // 로그인은 JSON API 로 직접 만들므로 기본 /login 화면과 그 로그인 필터를 쓰지 않는다
             .formLogin(AbstractHttpConfigurer::disable)
             // 요청마다 아이디·비밀번호를 보내는 Basic 인증 대신 토큰을 보낸다
@@ -24,6 +36,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // Authorization: Bearer 헤더의 JWT 를 JwtDecoder 로 검사해서 로그인 사용자로 인정한다
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+            .addFilterAfter(new AccessTokenCookieFilter(), CsrfFilter.class)
             // 주소별 허용 규칙. 위에서부터 처음 맞는 규칙이 적용되므로 anyRequest 는 맨 아래에 둔다
             .authorizeHttpRequests(auth -> auth
                     // 404 같은 오류 응답을 만들려고 /error 로 가는 내부 이동이 막히면 원래 오류가 401 로 가려진다
