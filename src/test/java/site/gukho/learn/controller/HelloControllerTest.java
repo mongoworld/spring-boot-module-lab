@@ -43,7 +43,8 @@ class HelloControllerTest {
 
         assertThat(mvc.get().uri("/api/hello").header("Authorization", "Bearer " + token))
                 .hasStatusOk()
-                .bodyText().startsWith("hello admin");
+                .bodyText().startsWith("hello admin").contains("ROLE_ADMIN", "ROLE_USER");
+
     }
 
     // 근거: 서명이 맞지 않는 토큰은 401 이어야 한다 (payload 위조 방지)
